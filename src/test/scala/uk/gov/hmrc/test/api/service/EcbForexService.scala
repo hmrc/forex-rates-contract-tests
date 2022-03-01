@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.test.api.helpers
+package uk.gov.hmrc.test.api.service
 
-import org.scalatest.Assertions.fail
 import play.api.libs.ws.StandaloneWSRequest
-import uk.gov.hmrc.test.api.service.AuthService
+import uk.gov.hmrc.test.api.client.HttpClient
+import uk.gov.hmrc.test.api.conf.TestConfiguration
 
-class AuthHelper {
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
-  val authAPI: AuthService = new AuthService
+class EcbForexService extends HttpClient {
+  private val ecbHost: String       = TestConfiguration.url("ecb-forex")
+  private val ecbRssFeedURL: String = s"$ecbHost/rss/fxref-gbp.html"
 
-  def getAuthBearerToken: String = {
-    val authServiceRequestResponse: StandaloneWSRequest#Self#Response = authAPI.postLogin
-    authServiceRequestResponse.header("Authorization").getOrElse(fail("Could not obtain auth bearer token"))
-  }
+  def getEcbForexRssFeed: StandaloneWSRequest#Self#Response =
+    Await.result(
+      get(ecbRssFeedURL),
+      10.seconds
+    )
 }
