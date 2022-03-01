@@ -16,59 +16,43 @@
 
 package uk.gov.hmrc.test.api.specs
 
-import uk.gov.hmrc.test.api.models.ForexRate
-import uk.gov.hmrc.test.api.utils.TestUtils
+import org.scalatest.Assertion
+
+import scala.xml.{Node, XML}
 
 class GetRatesSpec extends BaseSpec {
 
   Feature("Retrieving Forex Rates") {
 
-    Scenario("Get Forex Rates for a single specified date") {
+    Scenario("Call the ECB endpoint for today") {
 
-      Given("The RSS feed has been called today")
+      When("The RSS feed has been called today")
 
-      val feedRetrieved = forexRatesHelper.triggerRssFeedRetrieval()
-      feedRetrieved shouldBe true
+      val response =
+        ecbForexService.getEcbForexRssFeed
 
-      When("I call the last weekday")
+      Then("The rates are returned in the correct format")
 
-      val lastWeekday          = TestUtils.getLastWeekdayAfter4pm
-      val forexRate: ForexRate =
-        forexRatesHelper.getForexRatesSingleDate(TestUtils.dateTimeFormatter.format(lastWeekday), "EUR", "GBP")
+      val loadedXml = XML.loadString(response.body)
 
-      Then("I am returned an exchange rate")
+      val listOfItems = loadedXml \\ "RDF" \\ "item"
 
-      forexRate.date           shouldBe lastWeekday
-      forexRate.baseCurrency   shouldBe "EUR"
-      forexRate.targetCurrency shouldBe "GBP"
+      listOfItems.size shouldBe 5
+
+      listOfItems.foreach(singleItem => checkForSingleExchangeRate(singleItem))
 
     }
 
-    Scenario("Get Forex Rates for a specified date range") {
+  }
 
-      Given("The RSS feed has been called today")
+  def checkForSingleExchangeRate(baseElem: Node): Assertion = {
+    (baseElem \\ "date").exists(x => x.text.nonEmpty) shouldBe true
 
-      val feedRetrieved = forexRatesHelper.triggerRssFeedRetrieval()
-      feedRetrieved shouldBe true
+    val exchangeRateElem = baseElem \\ "statistics" \\ "exchangeRate"
 
-      When("I retrieve a date range")
-
-      val dateTo   = TestUtils.getLastWeekdayAfter4pm
-      val dateFrom = dateTo.minusDays(3)
-
-      val forexRates: Seq[ForexRate] =
-        forexRatesHelper.getForexRatesDateRange(
-          TestUtils.dateTimeFormatter.format(dateFrom),
-          TestUtils.dateTimeFormatter.format(dateTo),
-          "EUR",
-          "GBP"
-        )
-
-      Then("I am returned the matching exchange rates")
-
-      forexRates.size shouldBe TestUtils.getExpectedNumberOfRates(dateTo)
-
-    }
+    (exchangeRateElem \\ "value").exists(x => x.text.nonEmpty)          shouldBe true
+    (exchangeRateElem \\ "baseCurrency").exists(x => x.text.nonEmpty)   shouldBe true
+    (exchangeRateElem \\ "targetCurrency").exists(x => x.text.nonEmpty) shouldBe true
 
   }
 }

@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.test.api.models
+package uk.gov.hmrc.test.api.service
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.ws.StandaloneWSRequest
+import uk.gov.hmrc.test.api.client.HttpClient
+import uk.gov.hmrc.test.api.conf.TestConfiguration
 
-import java.time.LocalDate
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
-case class ForexRate(date: LocalDate, baseCurrency: String, targetCurrency: String, value: BigDecimal)
+class EcbForexService extends HttpClient {
+  private val ecbHost: String       = TestConfiguration.url("ecb-forex")
+  private val ecbRssFeedURL: String = s"$ecbHost/rss/fxref-gbp.html"
 
-object ForexRate {
-  implicit val forexRateJsonFormat: OFormat[ForexRate] = Json.format[ForexRate]
+  def getEcbForexRssFeed: StandaloneWSRequest#Self#Response =
+    Await.result(
+      get(ecbRssFeedURL),
+      10.seconds
+    )
 }
