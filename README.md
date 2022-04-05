@@ -1,5 +1,5 @@
 # forex-rates-contract-tests
-API test suite for the `forex-rates` using ScalaTest and [play-ws](https://github.com/playframework/play-ws) client.  
+API test suite for the `forex-rates` service using ScalaTest and [play-ws](https://github.com/playframework/play-ws) client.  
 
 ## Running the tests
 
@@ -14,28 +14,7 @@ This test can also be ran via the forex-rates-contract-tests job in jenkins on a
 
 If this needs to be tested locally, please use the following steps:
 
-Prior to executing the tests ensure you have:
-- Installed [MongoDB](https://docs.mongodb.com/manual/installation/)
-- Installed/configured [service manager](https://github.com/hmrc/service-manager).
-
-MongoDB:
-
-Run at least 4.0 with a replica set: `docker run --restart unless-stopped -d -p 27017-27019:27017-27019 --name mongo4 mongo:4.0 --replSet rs0`
-Connect to said replica set: `docker exec -it mongo4 mongo`
-When that console is there: `rs.initiate()`
-You then should be running 4.0 with a replica set. You may have to re-run the rs.initiate() after you've restarted
-
-
-Service Manager:
-```
-sm --start ONE_STOP_SHOP_ALL -r
-```
-If running a branch of forex-rates locally, use the following command in the terminal:
-```
-"sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"
-```
-
-Then execute the `run_tests.sh` script:
+Execute the `run_tests.sh` script:
 
 `./run_tests.sh <environment>`
 
