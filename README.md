@@ -1,43 +1,41 @@
-**This is a template README.md.  Be sure to update this with project specific content that describes your api test project.**
-
 # forex-rates-contract-tests
-API test suite for the `<digital service name>` using ScalaTest and [play-ws](https://github.com/playframework/play-ws) client.  
+API test suite for the `forex-rates` service using ScalaTest and [play-ws](https://github.com/playframework/play-ws) client.  
 
 ## Running the tests
 
-Prior to executing the tests ensure you have:
- - Installed [MongoDB](https://docs.mongodb.com/manual/installation/) 
- - Installed/configured [service manager](https://github.com/hmrc/service-manager).  
+Scheduled job on QA:
 
-Run the following commands to start services locally:
+These tests were developed to run against QA once a week on a Monday at 6.30am to check that the RSS feed is still 
+returning XML in the expected format. This is configured via the build-jobs repo.
 
-    docker run --rm -d --name mongo -d -p 27017:27017 mongo:3.6
-    sm --start IVHO -r --wait 100
+Ad-hoc running on QA:
 
-Using the `--wait 100` argument ensures a health check is run on all the services started as part of the profile. `100` refers to the given number of seconds to wait for services to pass health checks.    
+This test can also be ran via the forex-rates-contract-tests job in jenkins on an ad-hoc basis.
 
-Then execute the `run_tests.sh` script:
+If this needs to be tested locally, please use the following steps:
+
+Execute the `run_tests.sh` script:
 
 `./run_tests.sh <environment>`
 
 The tests default to the `local` environment.  For a complete list of supported param values, see:
- - `src/test/resources/application.conf` for **environment** 
+- `src/test/resources/application.conf` for **environment**
 
 #### Running the tests against a test environment
 
 To run the tests against an environment set the corresponding `host` environment property as specified under
- `<env>.host.services` in the [application.conf](src/test/resources/application.conf). 
+`<env>.host.services` in the [application.conf](src/test/resources/application.conf).
 
- ### Scalafmt
- This repository uses [Scalafmt](https://scalameta.org/scalafmt/), a code formatter for Scala. The formatting rules configured for this repository are defined within [.scalafmt.conf](.scalafmt.conf).
+### Scalafmt
+This repository uses [Scalafmt](https://scalameta.org/scalafmt/), a code formatter for Scala. The formatting rules configured for this repository are defined within [.scalafmt.conf](.scalafmt.conf).
 
- To apply formatting to this repository using the configured rules in [.scalafmt.conf](.scalafmt.conf) execute:
+To apply formatting to this repository using the configured rules in [.scalafmt.conf](.scalafmt.conf) execute:
 
  ```
  sbt scalafmtAll scalafmtSbt
  ```
 
- To check files have been formatted as expected execute:
+To check files have been formatted as expected execute:
 
  ```
  sbt scalafmtCheckAll scalafmtSbtCheck
