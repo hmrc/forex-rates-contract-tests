@@ -14,6 +14,11 @@ This test can also be ran via the forex-rates-contract-tests job in jenkins on a
 
 If this needs to be tested locally, please use the following steps:
 
+Service Manager:
+```
+sm --start FOREX_RATES_ALL -r
+```
+
 Execute the `run_tests.sh` script:
 
 `./run_tests.sh <environment>`
