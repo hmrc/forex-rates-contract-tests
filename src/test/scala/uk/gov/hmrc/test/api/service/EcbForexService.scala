@@ -27,7 +27,7 @@ class EcbForexService extends HttpClient {
   private val ecbHost: String       = TestConfiguration.url("ecb-forex")
   private val ecbRssFeedURL: String = s"$ecbHost/rss/fxref-gbp.html"
 
-  def getEcbForexRssFeed: StandaloneWSRequest#Self#Response =
+  def getEcbForexRssFeed =
     Await.result(
       get(ecbRssFeedURL),
       10.seconds
