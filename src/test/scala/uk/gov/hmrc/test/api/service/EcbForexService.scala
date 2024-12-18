@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.test.api.service
 
-import play.api.libs.ws.StandaloneWSRequest
 import uk.gov.hmrc.test.api.client.HttpClient
 import uk.gov.hmrc.test.api.conf.TestConfiguration
 
