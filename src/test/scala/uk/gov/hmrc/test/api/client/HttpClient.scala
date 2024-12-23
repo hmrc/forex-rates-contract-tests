@@ -31,18 +31,18 @@ trait HttpClient {
   def get(url: String, headers: (String, String)*) =
     wsClient
       .url(url)
-      .withHttpHeaders(headers*)
+      .withHttpHeaders(headers *)
       .get()
 
   def post(url: String, bodyAsJson: String, headers: (String, String)*) =
     wsClient
       .url(url)
-      .withHttpHeaders(headers*)
+      .withHttpHeaders(headers *)
       .post(bodyAsJson)
 
   def delete(url: String, headers: (String, String)*) =
     wsClient
       .url(url)
-      .withHttpHeaders(headers*)
+      .withHttpHeaders(headers *)
       .delete()
 }
